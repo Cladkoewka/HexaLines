@@ -17,16 +17,7 @@ namespace Assets.Scripts.Hex
             new Vector3(-InnerRadius, 0.5f * OuterRadius, 0),
             new Vector3(0, OuterRadius, 0)
         };
-
         
-            /*
-            new Vector3(0, OuterRadius, 0),
-            new Vector3(InnerRadius, OuterRadius * 0.5f, 0),
-            new Vector3(InnerRadius, OuterRadius * -0.5f, 0),
-            new Vector3(0, -OuterRadius, 0),
-            new Vector3(-InnerRadius, -0.5f * OuterRadius, 0),
-            new Vector3(-InnerRadius, 0.5f * OuterRadius, 0),
-            new Vector3(0, OuterRadius, 0)
-             */
+        public static int[] CellsCount = new []{5,6,7,8,9,8,7,6,5};
     }
 }

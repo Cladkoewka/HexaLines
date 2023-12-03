@@ -2,6 +2,7 @@
 
 namespace Assets.Scripts.Hex
 {
+    [System.Serializable]
     public struct HexCoordinates
     {
         [SerializeField] private int _x;
@@ -17,21 +18,49 @@ namespace Assets.Scripts.Hex
             _y = y;
         }
 
-        public static HexCoordinates FromOffsetCoordinates(int x, int y) => 
-            new(x - y / 2, y);
+        public static HexCoordinates FromOffsetCoordinates(int x, int y)
+        {
+            int xCoordinate = x;
+            
+            switch (y)
+            {
+                case 1:
+                    xCoordinate -= 1;
+                    break;
+                case 2:
+                    xCoordinate -= 2;
+                    break;
+                case 3:
+                    xCoordinate -= 3;
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    xCoordinate -= 4;
+                    break;
+            }
+            
+            int yCoordinate = y - 4;
+            
+            return new HexCoordinates(xCoordinate, yCoordinate);
+        }
 
         public static HexCoordinates FromPosition(Vector3 position)
         {
-            float x = position.x / (HexMetrics.InnerRadius * 2f);
+            Debug.Log($"position {position}");
+            float x = position.x / (HexMetrics.InnerRadius * 2) - 2;
             float y = -x;
-
-            float offset = position.y / (HexMetrics.OuterRadius * 3f);
-            x -= offset;
-            y -= offset;
-
+            
+            float offsetY = (position.y / (HexMetrics.OuterRadius * 3f)) - 2;
+            y -= offsetY;
+            x -= offsetY;
+            
             int iX = Mathf.RoundToInt(x);
             int iY = Mathf.RoundToInt(y);
             int iZ = Mathf.RoundToInt(-x -y);
+
             
             if (iX + iY + iZ != 0) {
                 float dX = Mathf.Abs(x - iX);
@@ -48,14 +77,13 @@ namespace Assets.Scripts.Hex
 
             return new HexCoordinates(iX, iZ);
         }
-        
-        public override string ToString () {
-            return "(" +
-                   X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
-        }
 
-        public string ToStringOnSeparateLines () {
-            return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
-        }
+        
+        
+        public override string ToString () => 
+            "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
+
+        public string ToStringOnSeparateLines () => 
+            X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
     }
 }

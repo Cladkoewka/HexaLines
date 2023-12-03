@@ -20,10 +20,7 @@ namespace Assets.Scripts.Hex
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit)) 
-            {
-                Debug.Log("Handle Input");
                 hexGrid.ColorCell(hit.point, _color);
-            }
         }
 
     }

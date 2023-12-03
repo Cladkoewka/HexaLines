@@ -9,6 +9,8 @@ public class HexCell : MonoBehaviour
     [SerializeField] private Color _color;
     [SerializeField] private HexCoordinates _hexCoordinates;
     [SerializeField] private TMP_Text _labelText;
+    
+    public bool IsFilled { get; set; }
 
     public TMP_Text LabelText
     {

@@ -6,6 +6,7 @@ namespace Assets.Scripts.Hex
     {
         public const float OuterRadius = 1;
         public const float InnerRadius = OuterRadius * 0.866025404f;
+        public const float Spacing = 0.2f;
 
         public static Vector3[] Corners =
         {

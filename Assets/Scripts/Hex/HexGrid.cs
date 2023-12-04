@@ -6,7 +6,9 @@ namespace Assets.Scripts.Hex
 {
     public class HexGrid : MonoBehaviour
     {
-        [SerializeField] private Color _defaultColor = Color.white;
+        public Color DefaultColor = Color.white;
+        
+        [SerializeField] private Color _clearColor = Color.gray;
         [SerializeField] private HexCell _cellPrefab;
 
         private HexCell[] _cells;
@@ -31,45 +33,58 @@ namespace Assets.Scripts.Hex
             }
         }
 
+
         private void Start() => 
             _hexMesh.Triangulate(_cells);
+        
 
         private void CreateCell(int x, int y, int i)
         {
             Vector3 position;
             position.x = XPosition(x, y);
-            position.y = y * (HexMetrics.OuterRadius * 1.5f);
+            position.y = y * (HexMetrics.OuterRadius * 1.5f + HexMetrics.Spacing);
             position.z = 0;
 
             HexCell cell = _cells[i] = Instantiate(_cellPrefab);
             cell.transform.SetParent(transform, false);
             cell.transform.localPosition = position;
             cell.HexCoordinates = HexCoordinates.FromOffsetCoordinates(x, y);
-            cell.Color = _defaultColor;
-            cell.LabelText.text = cell.HexCoordinates.ToStringOnSeparateLines();
+            cell.Color = DefaultColor;
+            //cell.LabelText.text = cell.HexCoordinates.ToStringOnSeparateLines();
         }
 
         private float XPosition(int x, int y)
         {
             float xPos;
             if (y <= HexMetrics.CellsCount.Length / 2)
-                xPos = (x - y * 0.5f) * (HexMetrics.InnerRadius * 2f);
+                xPos = (x - y * 0.5f) * (HexMetrics.InnerRadius * 2f + HexMetrics.Spacing);
             else
-                xPos = (x + y * 0.5f - HexMetrics.CellsCount.Length / 2) * (HexMetrics.InnerRadius * 2f);
+                xPos = (x + y * 0.5f - HexMetrics.CellsCount.Length / 2) * (HexMetrics.InnerRadius * 2f + HexMetrics.Spacing);
             return xPos;
         }
 
-        public void ColorCell(Vector3 position, Color color)
+
+        public HexCell CellByCoordinates(Vector3 position)
         {
-            Vector3 localPosition = transform.InverseTransformPoint(position);
-            HexCoordinates coordinates = HexCoordinates.FromPosition(localPosition);
+            HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+            Debug.Log(coordinates.ToString());
             HexCell cell = FindCellByCoordinates(coordinates);
-            cell.Color = color;
-            cell.IsFilled = true;
-            _hexMesh.Triangulate(_cells);
-            
-            CheckLines();
+            return cell;
         }
+        
+        public void ColorCell(HexCell cell, Color color)
+        {
+            cell.Color = color;
+            _hexMesh.Triangulate(_cells);
+        }
+
+        public void FillCell(HexCell cell)
+        {
+            cell.IsFilled = true;
+            CheckLines();
+            _hexMesh.Triangulate(_cells);
+        }
+
 
         private void CheckLines()
         {
@@ -113,12 +128,17 @@ namespace Assets.Scripts.Hex
 
         private IEnumerator ClearCells(HexCell[] allCells)
         {
+            foreach (HexCell cell in allCells) 
+                cell.Color = _clearColor;
+            
+            _hexMesh.Triangulate(_cells);
+
             yield return new WaitForSeconds(0.5f);
             
             foreach (HexCell cell in allCells)
             {
                 cell.IsFilled = false;
-                cell.Color = _defaultColor;
+                cell.Color = DefaultColor;
             }
             
             _hexMesh.Triangulate(_cells);

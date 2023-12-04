@@ -49,11 +49,12 @@ namespace Assets.Scripts.Hex
 
         public static HexCoordinates FromPosition(Vector3 position)
         {
-            Debug.Log($"position {position}");
-            float x = position.x / (HexMetrics.InnerRadius * 2) - 2;
+            float spacing = HexMetrics.Spacing;
+
+            float x = (position.x + spacing) / (HexMetrics.InnerRadius * 2f + spacing) - 2;
             float y = -x;
-            
-            float offsetY = (position.y / (HexMetrics.OuterRadius * 3f)) - 2;
+
+            float offsetY = (position.y + spacing) / (HexMetrics.OuterRadius * 3f + spacing * 2) - 2;
             y -= offsetY;
             x -= offsetY;
             

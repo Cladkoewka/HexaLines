@@ -3,13 +3,14 @@ using Assets.Scripts.Figures;
 using Assets.Scripts.Static;
 using UnityEngine;
 
-namespace Assets.Scripts.FiguresSpawner
+namespace Assets.Scripts.Spawner
 {
     public class FiguresSpawner : MonoBehaviour
     {
         [SerializeField] private HexFigure[] _hexFigurePrefabs;
         [SerializeField] private FigureSpawnPoint[] _figuresSpawnPoints;
         [SerializeField] private Color[] _figureColors;
+        
 
 
         public void Init()

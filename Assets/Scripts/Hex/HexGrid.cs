@@ -1,23 +1,65 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
+using Assets.Scripts.Static;
+using Assets.Scripts.UI;
 using UnityEngine;
 
 namespace Assets.Scripts.Hex
 {
     public class HexGrid : MonoBehaviour
     {
-        public Color DefaultColor = Color.white;
-        
+        [SerializeField] private Color _defaultColor = Color.white;
         [SerializeField] private Color _clearColor = Color.gray;
         [SerializeField] private HexCell _cellPrefab;
+        [SerializeField] private HexMesh _hexMesh;
+        [SerializeField] private GameObject _flyScoresPrefab;
+
+        public Color DefaultColor => _defaultColor;
 
         private HexCell[] _cells;
-        private HexMesh _hexMesh;
 
-        private void Awake()
+        public event Action<int> LineFilled;
+        public event Action CellFilled; 
+
+        public void Init()
         {
-            _hexMesh = GetComponentInChildren<HexMesh>();
+            CreateGrid(); 
+            
+            _hexMesh.Triangulate(_cells);
+        }
 
+        public HexCell CellByCoordinates(Vector3 position)
+        {
+            HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+            Debug.Log(coordinates.ToString());
+            HexCell cell = FindCellByCoordinates(coordinates);
+            return cell;
+        }
+
+        public void ColorCell(HexCell cell, Color color)
+        {
+            cell.Color = color;
+            _hexMesh.Triangulate(_cells);
+        }
+
+        public void FillCell(HexCell cell)
+        {
+            cell.IsFilled = true;
+            CheckLines();
+            _hexMesh.Triangulate(_cells);
+            CellFilled?.Invoke();
+        }
+
+        public void CreateFlyScores(Vector3 position, int score)
+        {
+            GameObject flyScoresGO = Instantiate(_flyScoresPrefab, position - Vector3.forward * 0.1f, Quaternion.identity);
+            FlyScores flyScores = flyScoresGO.GetComponent<FlyScores>();
+            flyScores.Init(score);
+        }
+
+        private void CreateGrid()
+        {
             _cells = new HexCell[HexMetrics.CellsCount.Sum()];
 
             int i = 0;
@@ -33,10 +75,6 @@ namespace Assets.Scripts.Hex
             }
         }
 
-
-        private void Start() => 
-            _hexMesh.Triangulate(_cells);
-        
 
         private void CreateCell(int x, int y, int i)
         {
@@ -61,28 +99,6 @@ namespace Assets.Scripts.Hex
             else
                 xPos = (x + y * 0.5f - HexMetrics.CellsCount.Length / 2) * (HexMetrics.InnerRadius * 2f + HexMetrics.Spacing);
             return xPos;
-        }
-
-
-        public HexCell CellByCoordinates(Vector3 position)
-        {
-            HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-            Debug.Log(coordinates.ToString());
-            HexCell cell = FindCellByCoordinates(coordinates);
-            return cell;
-        }
-        
-        public void ColorCell(HexCell cell, Color color)
-        {
-            cell.Color = color;
-            _hexMesh.Triangulate(_cells);
-        }
-
-        public void FillCell(HexCell cell)
-        {
-            cell.IsFilled = true;
-            CheckLines();
-            _hexMesh.Triangulate(_cells);
         }
 
 
@@ -133,8 +149,12 @@ namespace Assets.Scripts.Hex
             
             _hexMesh.Triangulate(_cells);
 
-            yield return new WaitForSeconds(0.5f);
+            CreateFlyScores(allCells[allCells.Length/2].transform.position, Constants.ScoresByCellWhenLineFilled * allCells.Length);
+            LineFilled?.Invoke(allCells.Length);
             
+            yield return new WaitForSeconds(0.5f);
+
+
             foreach (HexCell cell in allCells)
             {
                 cell.IsFilled = false;

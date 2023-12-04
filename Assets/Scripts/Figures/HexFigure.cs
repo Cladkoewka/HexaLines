@@ -1,6 +1,6 @@
 ﻿using System;
-using Assets.Scripts.FiguresSpawner;
 using Assets.Scripts.Hex;
+using Assets.Scripts.Spawner;
 using Assets.Scripts.Static;
 using UnityEngine;
 
@@ -96,6 +96,10 @@ namespace Assets.Scripts.Figures
 
             foreach (HexSimpleFigure simpleFigure in _hexSimpleFigures)
                 simpleFigure.Place();
+            
+            //Костыль, по хорошему переделать
+            FindObjectOfType<HexGrid>().CreateFlyScores(_hexSimpleFigures[_hexSimpleFigures.Length/2].transform.position,
+                _hexSimpleFigures.Length * Constants.ScoresByFilledCell);
 
             Destroy(gameObject);
         }

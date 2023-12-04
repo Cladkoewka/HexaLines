@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.FiguresSpawner
+namespace Assets.Scripts.Spawner
 {
     public class FigureSpawnPoint : MonoBehaviour
     {

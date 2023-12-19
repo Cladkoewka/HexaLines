@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 419687db9ad287449a45e2a0021854db, type: 3}
+  m_Name: Skin1
+  m_EditorClassIdentifier: 
+  BackGroundColor: {r: 0.13333334, g: 0.13333334, b: 0.13333334, a: 1}
+  GridColor: {r: 0.41960788, g: 0.42352945, b: 0.427451, a: 1}
+  CellsClearColor: {r: 1, g: 1, b: 1, a: 1}
+  ButtonsColor: {r: 0.7490196, g: 0.7490196, b: 0.7490196, a: 1}
+  ShopButtonsColor: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+  TextColor: {r: 1, g: 1, b: 1, a: 1}
+  SkinPreview: {fileID: 21300000, guid: f78a0d799e1de3b4b819a65e4428c503, type: 3}
+  IsOpened: 1
+  Price: 0

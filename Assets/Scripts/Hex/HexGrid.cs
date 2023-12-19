@@ -31,11 +31,26 @@ namespace Assets.Scripts.Hex
 
         public HexCell CellByCoordinates(Vector3 position)
         {
-            HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+            var localPosition = transform.InverseTransformVector(position);
+            HexCoordinates coordinates = HexCoordinates.FromPosition(localPosition);
             Debug.Log(coordinates.ToString());
             HexCell cell = FindCellByCoordinates(coordinates);
             return cell;
         }
+
+        public void SetCellsDefaultColor(Color color)
+        {
+            _defaultColor = color;
+            foreach (var cell in _cells)
+            {
+                if (!cell.IsFilled)
+                    cell.Color = color;
+            }
+            _hexMesh.Triangulate(_cells);
+        }
+
+        public void SetCellsClearColor(Color color) => 
+            _clearColor = color;
 
         public void ColorCell(HexCell cell, Color color)
         {

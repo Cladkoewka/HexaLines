@@ -1,8 +1,10 @@
 ﻿using System;
+using Assets.Scripts.Audio;
 using Assets.Scripts.Hex;
 using Assets.Scripts.Spawner;
 using Assets.Scripts.Static;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Figures
 {
@@ -16,8 +18,13 @@ namespace Assets.Scripts.Figures
         public event Action Placed;
         public FigureSpawnPoint FigureSpawnPoint;
 
-        private void OnMouseDown() => 
-            StartDrugging();
+        private void OnMouseDown()
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+                StartDrugging();
+            else
+                _startPosition = transform.position;
+        }
 
         private void OnMouseDrag()
         {
@@ -100,13 +107,15 @@ namespace Assets.Scripts.Figures
             //Костыль, по хорошему переделать
             FindObjectOfType<HexGrid>().CreateFlyScores(_hexSimpleFigures[_hexSimpleFigures.Length/2].transform.position,
                 _hexSimpleFigures.Length * Constants.ScoresByFilledCell);
+            
+            AudioManager.Instance.PlayPlaceFigureSound();
 
             Destroy(gameObject);
         }
 
         private void StartDrugging()
         {
-            transform.localScale = Vector3.one;
+            transform.localScale = Vector3.one * Constants.ActiveScaleFactor;
             
             _isDragging = true;
             _startPosition = transform.position;

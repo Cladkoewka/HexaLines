@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Hex;
+﻿using Assets.Scripts.Audio;
+using Assets.Scripts.Hex;
 using Assets.Scripts.Static;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,8 @@ namespace Assets.Scripts.Scores
 {
     public class ScoreCounter
     {
+        private const string MaxScorePFKey = "MaxScore";
+        
         private TMP_Text _currentScoreText;
         private TMP_Text _highestScoreText;
         private int _currentScore;
@@ -17,6 +20,7 @@ namespace Assets.Scripts.Scores
             hexGrid.CellFilled += AddScoresByFilledCells;
             _currentScoreText = currentScoreText;
             _highestScoreText = highestScoreText;
+            _highestScoreText.text = PlayerPrefs.GetInt(MaxScorePFKey).ToString();
         }
 
 
@@ -29,6 +33,7 @@ namespace Assets.Scripts.Scores
         private void AddScoresByFilledLine(int lineLength)
         {
             _currentScore += lineLength * Constants.ScoresByCellWhenLineFilled;
+            AudioManager.Instance.PlayLineFilledSound();
             UpdateText();
         }
 
@@ -36,14 +41,14 @@ namespace Assets.Scripts.Scores
         {
             _currentScoreText.text = _currentScore.ToString();
 
-            if (_currentScore >= PlayerProgress.HighestScores) 
+            if (_currentScore >= PlayerPrefs.GetInt(MaxScorePFKey))
                 UpdateHighestScore();
         }
 
         private void UpdateHighestScore()
         {
-            PlayerProgress.HighestScores = _currentScore;
-            _highestScoreText.text = PlayerProgress.HighestScores.ToString();
+            PlayerPrefs.SetInt(MaxScorePFKey, _currentScore);
+            _highestScoreText.text = _currentScore.ToString();
         }
     }
 }

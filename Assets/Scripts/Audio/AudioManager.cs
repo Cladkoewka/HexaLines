@@ -13,11 +13,13 @@ namespace Assets.Scripts.Audio
 
         public void Init()
         {
-            if (Instance != null) 
-                Destroy(Instance.gameObject);
-
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+                Destroy(gameObject);
         }
 
         public void PlayLineFilledSound()

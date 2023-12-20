@@ -8,10 +8,10 @@ namespace Assets.Scripts.Shop
     public class Shop : MonoBehaviour
     {
         [SerializeField] private Skin[] _skins;
-        [SerializeField] private SkinChanger _skinChanger;
-        
+
         [Header("UI Elements")]
         [SerializeField] private Button _setSkinButton;
+
         [SerializeField] private Button _buySkinButton;
         [SerializeField] private TMP_Text _priceSkinText;
         [SerializeField] private Button _openShopButton;
@@ -20,19 +20,28 @@ namespace Assets.Scripts.Shop
         [SerializeField] private Button _prevButton;
         [SerializeField] private Image _skinPreviewImage;
         [SerializeField] private GameObject _shopWindow;
+        
+        private const string CurrentSettedSkin = "CurrentSettedSkin";
 
         private int _currentSkinIndex;
         private MoneyService _moneyService;
+        private SkinChanger _skinChanger;
+        
         
 
-        public void Init(MoneyService moneyService)
+        public void Init(MoneyService moneyService, SkinChanger skinChanger)
         {
             _moneyService = moneyService;
+            _skinChanger = skinChanger;
             
             Subscribe();
             SetButtons();
             SetSkinPreview();
+            SetCurrentSkin();
         }
+
+        private void SetCurrentSkin() => 
+            _skinChanger.SetSkin(_skins[PlayerPrefs.GetInt(CurrentSettedSkin)]);
 
         private void OnDestroy() => 
             Unsubscribe();
@@ -121,7 +130,10 @@ namespace Assets.Scripts.Shop
             }
         }
 
-        private void SetSkin() => 
+        private void SetSkin()
+        {
             _skinChanger.SetSkin(_skins[_currentSkinIndex]);
+            PlayerPrefs.SetInt(CurrentSettedSkin, _currentSkinIndex);
+        }
     }
 }

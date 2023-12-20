@@ -7,5 +7,8 @@
         public static int ScoresByCellWhenLineFilled = 10;
         public static int ScoresByFilledCell = 3;
         public static float CoinDropChance = 0.05f;
+        
+        public const string PlayerNamePFKey = "PlayerName";
+        public const string MaxScorePFKey = "MaxScore";
     }
 }
